@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
-	"iconsole/services"
+	"github.com/larryhou/iconsole/services"
 	"strings"
 
 	"github.com/urfave/cli"

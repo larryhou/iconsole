@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"iconsole/frames"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/frames"
+	"github.com/larryhou/iconsole/tunnel"
 	"os"
 
 	"github.com/urfave/cli"

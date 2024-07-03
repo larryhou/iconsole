@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"iconsole/services"
+	"github.com/larryhou/iconsole/services"
 	"path"
 
 	"github.com/urfave/cli"

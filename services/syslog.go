@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"iconsole/frames"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/frames"
+	"github.com/larryhou/iconsole/tunnel"
 )
 
 type SyslogRelayService struct {

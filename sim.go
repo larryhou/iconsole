@@ -1,7 +1,7 @@
 package main
 
 import (
-	"iconsole/services"
+	"github.com/larryhou/iconsole/services"
 
 	"github.com/urfave/cli"
 )

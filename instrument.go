@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"iconsole/services"
+	"github.com/larryhou/iconsole/services"
 	"os"
 	"strconv"
 	"strings"

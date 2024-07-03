@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"iconsole/frames"
-	"iconsole/ns"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/frames"
+	"github.com/larryhou/iconsole/ns"
+	"github.com/larryhou/iconsole/tunnel"
 	"time"
 	"unsafe"
 )

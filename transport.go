@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/tunnel"
 	"io"
 	"net"
 	"os"

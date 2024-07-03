@@ -3,8 +3,8 @@ package services
 import (
 	"errors"
 	"fmt"
-	"iconsole/frames"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/frames"
+	"github.com/larryhou/iconsole/tunnel"
 )
 
 type ApplicationType string

@@ -3,8 +3,8 @@ package services
 import (
 	"bytes"
 	"encoding/binary"
-	"iconsole/frames"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/frames"
+	"github.com/larryhou/iconsole/tunnel"
 	"math"
 	"strconv"
 )

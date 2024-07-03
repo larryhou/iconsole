@@ -3,7 +3,7 @@ package tunnel
 import (
 	"bytes"
 	"encoding/binary"
-	"iconsole/frames"
+	"github.com/larryhou/iconsole/frames"
 	"net"
 
 	"howett.net/plist"

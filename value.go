@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/tunnel"
 	"strings"
 
 	"github.com/urfave/cli"

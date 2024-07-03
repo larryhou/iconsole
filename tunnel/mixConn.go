@@ -3,7 +3,7 @@ package tunnel
 import (
 	"crypto/tls"
 	"errors"
-	"iconsole/frames"
+	"github.com/larryhou/iconsole/frames"
 	"net"
 	"time"
 )

@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"iconsole/frames"
+	"github.com/larryhou/iconsole/frames"
 	"net"
 	"time"
 

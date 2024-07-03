@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"iconsole/tunnel"
+	"github.com/larryhou/iconsole/tunnel"
 
 	"github.com/urfave/cli"
 )
