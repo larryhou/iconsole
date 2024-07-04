@@ -1,6 +1,7 @@
 package ns
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 
@@ -94,6 +95,10 @@ type GoNSError struct {
 	NSCode     int
 	NSDomain   string
 	NSUserInfo interface{}
+}
+
+func (x GoNSError) Error() string {
+	return fmt.Sprintf(`%d/%s %s`, x.NSCode, x.NSDomain, x.NSUserInfo)
 }
 
 type NSKeyedArchiver struct {
@@ -198,7 +203,6 @@ func (this *NSKeyedArchiver) convertValue(v interface{}) interface{} {
 			ret := make(map[string]interface{})
 			keys := m["NS.keys"].([]interface{})
 			values := m["NS.objects"].([]interface{})
-
 			for i := 0; i < len(keys); i++ {
 				key := this.objRefVal[keys[i].(plist.UID)].(string)
 				val := this.convertValue(this.objRefVal[values[i].(plist.UID)])
