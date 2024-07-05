@@ -70,6 +70,14 @@ var (
 		Classes:   []string{"NSError", "NSObject"},
 		ClassName: "NSError",
 	}
+	NSSetClass = &ArchiverClasses{
+		Classes:   []string{`NSSet`, `NSObject`},
+		ClassName: `NSSet`,
+	}
+	NSMutableSetClass = &ArchiverClasses{
+		Classes:   []string{`NSMutableSet`, `NSSet`, `NSObject`},
+		ClassName: `NSMutableSet`,
+	}
 )
 
 type NSObject struct {
@@ -207,6 +215,14 @@ func (this *NSKeyedArchiver) convertValue(v interface{}) interface{} {
 				key := this.objRefVal[keys[i].(plist.UID)].(string)
 				val := this.convertValue(this.objRefVal[values[i].(plist.UID)])
 				ret[key] = val
+			}
+			return ret
+		case NSMutableSetClass.Classes[0], NSSetClass.Classes[0]:
+			ret := make(map[any]struct{})
+			values := m[`NS.objects`].([]any)
+			for i := range values {
+				val := this.convertValue(this.objRefVal[values[i].(plist.UID)])
+				ret[val] = struct{}{}
 			}
 			return ret
 		case NSMutableArrayClass.Classes[0], NSArrayClass.Classes[0]:
