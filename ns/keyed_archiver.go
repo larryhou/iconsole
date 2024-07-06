@@ -78,6 +78,14 @@ var (
 		Classes:   []string{`NSMutableSet`, `NSSet`, `NSObject`},
 		ClassName: `NSMutableSet`,
 	}
+	DTTapMessageClass = &ArchiverClasses{
+		Classes:   []string{`DTTapMessage`, `NSObject`},
+		ClassName: `DTTapMessage`,
+	}
+	DTSysmonTapMessageClass = &ArchiverClasses{
+		Classes:   []string{`DTSysmonTapMessage`, `DTTapMessage`, `NSObject`},
+		ClassName: `DTSysmonTapMessage`,
+	}
 )
 
 type NSObject struct {
@@ -103,6 +111,10 @@ type GoNSError struct {
 	NSCode     int
 	NSDomain   string
 	NSUserInfo interface{}
+}
+
+type DTTapMessage struct {
+	Message map[string]any
 }
 
 func (x GoNSError) Error() string {
@@ -151,55 +163,70 @@ func (this *NSKeyedArchiver) clear() {
 }
 
 func (this *NSKeyedArchiver) Marshal(obj interface{}) ([]byte, error) {
-	val := reflect.ValueOf(obj)
-	typ := val.Type()
-
 	root := NewKeyedArchiver()
 
-	var tmpTop plist.UID
-
 	this.id(NSNull)
-
-	switch typ.Kind() {
-	case reflect.Map:
-		m := &NSDictionary{}
-		m.Class = this.id(NSDictionaryClass)
-		keys := val.MapKeys()
-		for _, v := range keys {
-			m.Keys = append(m.Keys, this.id(v.Interface()))
-			m.Values = append(m.Values, this.id(val.MapIndex(v).Interface()))
-		}
-		tmpTop = this.id(m)
-	case reflect.Slice, reflect.Array:
-		if typ.Elem().Kind() == reflect.Uint8 {
-			d := &NSData{}
-			d.Class = this.id(NSDataClass)
-			var w []byte
-			for i := 0; i < val.Len(); i++ {
-				w = append(w, uint8(val.Index(i).Uint()))
-			}
-			d.Data = w
-		}
-		a := &NSArray{}
-		a.Class = this.id(NSArrayClass)
-		for i := 0; i < val.Len(); i++ {
-			a.Values = append(a.Values, this.id(val.Index(i).Interface()))
-		}
-		tmpTop = this.id(a)
-	case reflect.String:
-		tmpTop = this.id(obj)
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-		tmpTop = this.id(obj)
-	}
-
-	root.Top.Root = tmpTop
+	root.Top.Root = this.idAny(obj)
 
 	this.flushToStruct(root)
 
 	this.clear()
 
 	return plist.Marshal(root, plist.BinaryFormat)
+}
+
+func (this *NSKeyedArchiver) idAny(obj any) plist.UID {
+	v := reflect.ValueOf(obj)
+	t := v.Type()
+
+	var uid plist.UID
+	switch t.Kind() {
+	case reflect.Map:
+		uid = this.idDictionary(v)
+	case reflect.Slice, reflect.Array:
+		uid = this.idArray(v)
+	case reflect.String:
+		uid = this.id(obj)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		uid = this.id(obj)
+	}
+
+	return uid
+}
+
+func (this *NSKeyedArchiver) idArray(v reflect.Value) plist.UID {
+	t := v.Type()
+	if t.Elem().Kind() == reflect.Uint8 {
+		d := &NSData{}
+		d.Class = this.id(NSDataClass)
+		var w []byte
+		for i := 0; i < v.Len(); i++ {
+			w = append(w, uint8(v.Index(i).Uint()))
+		}
+		d.Data = w
+		return this.id(d)
+	}
+
+	a := &NSArray{}
+	a.Class = this.id(NSArrayClass)
+	for i := 0; i < v.Len(); i++ {
+		a.Values = append(a.Values, this.idAny(v.Index(i).Interface()))
+	}
+
+	return this.id(a)
+}
+
+func (this *NSKeyedArchiver) idDictionary(v reflect.Value) plist.UID {
+	m := &NSDictionary{}
+	m.Class = this.id(NSDictionaryClass)
+	keys := v.MapKeys()
+	for _, k := range keys {
+		m.Keys = append(m.Keys, this.id(k.Interface()))
+		m.Values = append(m.Values, this.idAny(v.MapIndex(k).Interface()))
+	}
+
+	return this.id(m)
 }
 
 func (this *NSKeyedArchiver) convertValue(v interface{}) interface{} {
@@ -243,6 +270,11 @@ func (this *NSKeyedArchiver) convertValue(v interface{}) interface{} {
 			err.NSDomain = this.objRefVal[m["NSDomain"].(plist.UID)].(string)
 			err.NSUserInfo = this.convertValue(this.objRefVal[m["NSUserInfo"].(plist.UID)])
 			return *err
+		case DTTapMessageClass.Classes[0], DTSysmonTapMessageClass.Classes[0]:
+			tap := &DTTapMessage{
+				Message: this.convertValue(m[`DTTapMessagePlist`]).(map[string]any),
+			}
+			return tap
 		}
 	} else if uid, ok := v.(plist.UID); ok {
 		return this.convertValue(this.objRefVal[uid])
