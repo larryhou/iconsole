@@ -269,7 +269,7 @@ func (this *NSKeyedArchiver) convertValue(v interface{}) interface{} {
 			err.NSCode = int(m["NSCode"].(uint64))
 			err.NSDomain = this.objRefVal[m["NSDomain"].(plist.UID)].(string)
 			err.NSUserInfo = this.convertValue(this.objRefVal[m["NSUserInfo"].(plist.UID)])
-			return *err
+			return err
 		case DTTapMessageClass.Classes[0], DTSysmonTapMessageClass.Classes[0]:
 			tap := &DTTapMessage{
 				Message: this.convertValue(m[`DTTapMessagePlist`]).(map[string]any),
