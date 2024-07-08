@@ -187,7 +187,7 @@ func (this *NSKeyedArchiver) idAny(obj any) plist.UID {
 		uid = this.idArray(v)
 	case reflect.String:
 		uid = this.id(obj)
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Bool,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 		uid = this.id(obj)
 	}
